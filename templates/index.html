@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Skill Analyzer – Job Skills & Resume Match</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card-bg: white;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --border: #e2e8f0;
+            --primary: #5b21b6;
+            --primary-light: #7c3aed;
+            --accent: #0ea5e9;
+            --success: #10b981;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --primary: #a78bfa;
+            --primary-light: #c4b5fd;
+            --accent: #38bdf8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover { transform: scale(1.15); }
+
+        .hero-actions {
+            text-align: center;
+            margin: 3rem 0 4rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn.active,
+        .btn-outline.active {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 14px rgba(91, 33, 182, 0.25);
+            transform: translateY(-2px);
+            border: 2px solid transparent;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            padding: 2.2rem;
+            margin-bottom: 2.5rem;
+            display: none;
+        }
+
+        .card.active { display: block; }
+
+        .card h2 { margin-bottom: 1.5rem; font-size: 1.8rem; }
+
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg);
+            color: var(--text);
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(91, 33, 182, 0.15);
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            align-items: flex-end;
+            margin: 1.8rem 0;
+        }
+
+        .slider-wrapper { flex: 1; min-width: 240px; }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+        }
+
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.1rem;
+            margin-top: 1.5rem;
+        }
+
+        .skill-card {
+            background: rgba(91, 33, 182, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .skill-card:hover { 
+            background: rgba(91, 33, 182, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .skill-name { font-weight: 600; color: var(--text); }
+
+        .skill-confidence {
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .match-stats {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--success), var(--accent));
+            border-radius: 12px;
+            text-align: center;
+            margin: 2rem 0;
+            color: white;
+        }
+
+        .match-percentage {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+            display: block;
+            color: var(--text);
+        }
+
+        h3 { margin-top: 2rem; margin-bottom: 1rem; font-size: 1.4rem; }
+
+        .footer {
+            text-align: center;
+            margin-top: 6rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            margin: 0 0.8rem;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .loading.show { display: block; }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1.5rem 1rem; }
+            .title { font-size: 2rem; }
+            .card { padding: 1.5rem; }
+            .match-percentage { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 class="title">Skill Analyzer</h1>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="hero-actions">
+            <h2 style="margin-bottom: 1.5rem; font-size: 1.8rem;">What would you like to do?</h2>
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-primary active" id="btn-job-analysis">
+                    <i class="fas fa-briefcase"></i> Analyze Job Description
+                </button>
+                <button class="btn btn-outline" id="btn-resume-match">
+                    <i class="fas fa-file-alt"></i> Match My Resume
+                </button>
+            </div>
+        </div>
+
+        <!-- JOB ANALYSIS CARD -->
+        <div class="card active" id="job-card">
+            <h2>Job Skills Extractor</h2>
+            <form id="job-form" method="POST" action="/">
+                <input type="hidden" name="action" value="analyze_job">
+
+                <textarea id="job-description" name="job_description" 
+                          placeholder="Paste the full job description here..." required></textarea>
+
+                <div class="form-row">
+                    <div class="slider-wrapper">
+                        <div class="slider-label">
+                            <span>Confidence Threshold</span>
+                            <span id="job-threshold-val">0.50</span>
+                        </div>
+                        <input type="range" id="job-threshold" name="threshold" 
+                               min="0.1" max="0.9" step="0.05" value="0.50">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="job-submit">
+                        <i class="fas fa-search"></i> Analyze
+                    </button>
+                </div>
+            </form>
+
+            <div class="loading" id="job-loading">
+                <div class="spinner"></div>
+                <p>Analyzing job description...</p>
+            </div>
+
+            {% if show_job_results %}
+            <div id="job-results" style="display: block;">
+                <h3>Detected Skills (<span id="job-total">{{ total_skills }}</span>)</h3>
+                <div class="skills-container" id="job-skills">
+                    {% for skill in skills %}
+                    <div class="skill-card">
+                        <span class="skill-name">{{ skill.skill }}</span>
+                        <span class="skill-confidence">{{ (skill.confidence * 100)|round(0) }}%</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- RESUME MATCHER CARD -->
+        <div class="card" id="resume-card">
+            <h2>Resume Matcher</h2>
+            <form id="resume-form" method="POST" action="/">
+                <input type="hidden" name="action" value="match_resume">
+
+                <label>Your Resume / CV Text</label>
+                <textarea id="resume-text" name="resume_text" 
+                          placeholder="Paste your complete resume text here..." required></textarea>
+
+                <div style="margin: 2rem 0 1rem;">
+                    <label>Target Job Description</label>
+                    <textarea id="job-text" name="job_text" 
+                              placeholder="Paste the job description you're targeting..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;" id="resume-submit">
+                    <i class="fas fa-calculator"></i> Calculate Match Score
+                </button>
+            </form>
+
+            <div class="loading" id="resume-loading">
+                <div class="spinner"></div>
+                <p>Matching your resume...</p>
+            </div>
+
+            {% if show_resume_results %}
+            <div id="resume-results" style="display: block;">
+                <div class="match-stats">
+                    <div style="font-size: 1.2rem; opacity: 0.9;">Match Score</div>
+                    <div class="match-percentage" id="match-percentage">{{ match_percentage }}%</div>
+                    <div style="opacity: 0.9; margin-top: 0.5rem;" id="match-summary">
+                        {{ total_matching }} of {{ total_matching + total_missing }} required skills found
+                    </div>
+                </div>
+
+                <h3 style="color: var(--success);">
+                    <i class="fas fa-check-circle"></i> Skills Found in Your Resume (<span id="matching-count">{{ total_matching }}</span>)
+                </h3>
+                <div class="skills-container" id="matching-skills">
+                    {% for skill in matching_skills %}
+                    <div class="skill-card">
+                        <span class="skill-name">{{ skill.skill }}</span>
+                        <span class="skill-confidence">{{ (skill.confidence * 100)|round(0) }}%</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <h3 style="color: var(--accent); margin-top: 2rem;">
+                    <i class="fas fa-lightbulb"></i> Skills You Might Want to Highlight / Learn (<span id="missing-count">{{ total_missing }}</span>)
+                </h3>
+                <div class="skills-container" id="missing-skills">
+                    {% for skill in missing_skills %}
+                    <div class="skill-card">
+                        <span class="skill-name">{{ skill.skill }}</span>
+                        <span class="skill-confidence">{{ (skill.confidence * 100)|round(0) }}%</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="footer">
+            <p style="margin: 1.2rem 0 0.8rem; font-weight: 500;">
+                Created by <strong>Nowshin Tabasum</strong>
+            </p>
+            <div>
+                <a href="mailto:nawshintabassum88@gmail.com">
+                    <i class="fas fa-envelope"></i> Email
+                </a>
+                <a href="https://www.linkedin.com/in/nowshin-tabasum/" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="https://github.com/Naawshin" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            themeToggle.innerHTML = theme === 'dark' 
+                ? '<i class="fas fa-sun"></i>' 
+                : '<i class="fas fa-moon"></i>';
+        }
+
+        const saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        setTheme(saved);
+
+        themeToggle.addEventListener('click', () => {
+            setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+
+        // Section switching
+        const jobBtn = document.getElementById('btn-job-analysis');
+        const resumeBtn = document.getElementById('btn-resume-match');
+        const jobCard = document.getElementById('job-card');
+        const resumeCard = document.getElementById('resume-card');
+
+        function activateSection(activeBtn, activeCard, inactiveBtn, inactiveCard) {
+            activeCard.classList.add('active');
+            inactiveCard.classList.remove('active');
+            
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('btn-outline');
+            
+            inactiveBtn.classList.remove('active');
+            inactiveBtn.classList.add('btn-outline');
+
+            setTimeout(() => {
+                window.scrollTo({ 
+                    top: activeCard.offsetTop - 100, 
+                    behavior: 'smooth' 
+                });
+            }, 100);
+        }
+
+        jobBtn.addEventListener('click', () => activateSection(jobBtn, jobCard, resumeBtn, resumeCard));
+        resumeBtn.addEventListener('click', () => activateSection(resumeBtn, resumeCard, jobBtn, jobCard));
+
+        // Update threshold display
+        const jobThreshold = document.getElementById('job-threshold');
+        const jobThresholdVal = document.getElementById('job-threshold-val');
+
+        jobThreshold.addEventListener('input', (e) => {
+            jobThresholdVal.textContent = Number(e.target.value).toFixed(2);
+        });
+
+        // Show loading on form submit
+        document.getElementById('job-form').addEventListener('submit', () => {
+            document.getElementById('job-loading').classList.add('show');
+            document.getElementById('job-submit').disabled = true;
+        });
+
+        document.getElementById('resume-form').addEventListener('submit', () => {
+            document.getElementById('resume-loading').classList.add('show');
+            document.getElementById('resume-submit').disabled = true;
+        });
+    </script>
+</body>
+</html>
