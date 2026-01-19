@@ -58,7 +58,8 @@ I initally started out with distilroberta-base. Then I explored 3 more transform
 ## Model Deployment
 The model was depployed in HugginFace Spaces Gradio App. You'll get the implementation in the `deployment` folder or in the [gradio app](https://huggingface.co/spaces/goldphish2209/multilabel-skill-classifier)
 <div align="center">
-<img src="https://github.com/user-attachments/assets/5899bb9b-a1ea-487c-b8f3-7f49c8b0c5e5" alt="Gradio App Demo"/>
+<img src="https://github.com/user-attachments/assets/21903490-1e7a-48d8-bf52-a52ea2519ac9"
+ alt="Gradio App Demo"/>
 <br/>
 <small>Fig: HuggingFace Spaces Gradio App Demo</small>
 </div>
@@ -66,12 +67,12 @@ The model was depployed in HugginFace Spaces Gradio App. You'll get the implemen
 ## Web Deployment
 The Flask-based web app lets user extract skills from job descriptions and also match their resume with the required skills. Try the [Skill Extractor and Resume-Matcher](https://multilabel-skill-classifier.onrender.com) on Render.
 <div align="center">
-<img src="https://github.com/user-attachments/assets/c3a0d6e0-f339-424e-998a-490896fc15a5" width= 800 alt="Resume-Matcher App Demo"/>
+<img src="https://github.com/user-attachments/assets/af548153-6095-4cfa-a2d4-be26aae48906" width= 800 alt="Resume-Matcher App Demo"/>
 <br/>
 <small>Fig: Skill Analyzer and Resume-Matcher App Homepage</small>
 </div>
 <div align="center">
-<img src="https://github.com/user-attachments/assets/f9b74dd3-0cbe-488c-ac88-9314e6011f34" width= 800 alt="Resume-Matcher App Demo"/>
+<img src="https://github.com/user-attachments/assets/56ceb40f-96e3-44c6-9b40-e820bd3862f8" width= 800 alt="Resume-Matcher App Demo"/>
 <br/>
 <small>Fig: Skill Analyzer Demo</small>
 </div>
